@@ -147,6 +147,7 @@ public class Move {
 		}
 		
 		if(numCard > canMove) return false;
+		if(toCol.getNum() == 0) return true;
 		
 		boolean isBlackCard = (suit == Column.CLUB || suit == Column.SPADES);
 		
