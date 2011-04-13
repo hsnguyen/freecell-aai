@@ -262,6 +262,7 @@ public class Move {
 	 * @param column
 	 */
 	public boolean isValidColumnToFoundation(FreeCellState state, int column) {
+		if(state.columns[column].getNum() == 0) return false;
 		short card = state.columns[column].get(state.columns[column].getNum() - 1);
 		
 		this.fromColumn = column;
