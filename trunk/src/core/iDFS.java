@@ -22,16 +22,18 @@ public class iDFS {
 	private TreeMap<short[], Integer> prev;
 	
 	/**
-	 * Next states to be visited are inserted into next stack 
+	 * Next states to be visited are inserted into priority queue 
 	 * according to their evaluation in increasing order.
 	 */
-	private TreeMap<Integer, FreeCellState> nextStack;
+	private TreeMap<Integer, FreeCellState> pQueue;
 	
-	/**
-	 * last trace of state
-	 */
+	/** last trace of state */
 	private Trace lastTrace = null;
 	
+	/** 
+	 * contains all moves of each visit.
+	 * Finally, contains all moves of result.
+	 */
 	private Stack<Move> moveStack; 
 	
 	/** used to evaluate the score of a state */
@@ -42,28 +44,38 @@ public class iDFS {
 	
 	@SuppressWarnings("unchecked")
 	private boolean visit(final int stateID, int depth) {
+		// current state is an end-state.
 		if (currentState.hasWon()) {
-			return true;
+			return true;	// visit successfully
 		}
 
 		if (depth > DEPTH) {
+			
+			// clear memory
 			if (prev.size() > MAX_NUMBER_OF_STATES) {
 				prev.clear();
 				System.gc();
 			}
 			
-			prev.put((short[])currentState.key(), count);      
-			int score = scorer.eval(currentState);
+			// insert current state into memory
+			prev.put((short[])currentState.key(), count);
 			
+			int score = scorer.eval(currentState);
 			FreeCellState aCopy = currentState.clone();
+			// store trace of this state
 			aCopy.store(new Trace((Stack<Move>)moveStack.clone(), lastTrace));
-			nextStack.put(score, aCopy);
+			// insert state into queue
+			pQueue.put(score, aCopy);
 			return false;
 		}
 
+		// get all available moves
 		ArrayList<Move> listValidMoves = currentState.validMoves();
+		
 		Logger.write(System.out, "iDFS.visit(): number of valid moves = " 
 				+ listValidMoves.size() + "\n");
+		
+		// try with each move
 		for (int i = 0; i < listValidMoves.size(); ++i) {
 			Move move = listValidMoves.get(i);
 			move.execute(currentState); 
@@ -109,23 +121,20 @@ public class iDFS {
 		
 		moveStack = new Stack<Move>();
 		
-		TreeMap<Integer, FreeCellState> currentStack = 
-			new TreeMap<Integer, FreeCellState>();
+		pQueue = new TreeMap<Integer, FreeCellState>();
 		
-		nextStack = new TreeMap<Integer, FreeCellState>();
-		
-		currentStack.put(this.scorer.eval(currentState), currentState.clone());
+		pQueue.put(this.scorer.eval(currentState), currentState.clone());
 		
 		int lastBoardID;
-		while (currentStack.size() > 0) {
+		while (pQueue.size() > 0) {
 		
 			// get the first entry in current stack of FreeCell State
-			Entry<Integer, FreeCellState> firstEntry = currentStack.firstEntry();
+			Entry<Integer, FreeCellState> firstEntry = pQueue.firstEntry();
 			
 			currentState = firstEntry.getValue();
 			
 			// remove the first entry of current stack
-			currentStack.remove(firstEntry.getKey());
+			pQueue.remove(firstEntry.getKey());
 			
 			// last must be set PRIOR to invoking search, since it is used for
 			// linking solutions. moveStack must be instantiated anew also, so
@@ -145,6 +154,7 @@ public class iDFS {
 			}
 			
 			if (visit(lastBoardID, 0)) {
+				Logger.write(System.out, "iDFS.solve(): Bravo!");
 				// update stored move information.
 				nextTrace = new Trace((Stack<Move>)moveStack.clone(), nextTrace);
 				currentState.store(nextTrace);
@@ -152,8 +162,6 @@ public class iDFS {
 				moveStack = traceBack(currentState);
 				return moveStack;
 			}
-
-			currentStack = nextStack;
 		}	
 		
 		return null;
