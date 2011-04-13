@@ -1,3 +1,2 @@
 .. .. .. .. JC QD QH QS
-KC KD KH KS
-QC
+KC KD KH KS QC

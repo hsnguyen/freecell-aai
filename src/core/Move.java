@@ -118,40 +118,44 @@ public class Move {
 	 * @return
 	 */
 	public boolean isValidColumnToColumn(FreeCellState state, int fromColumn, int toColumn, int numCard) {
-		this.fromColumn = fromColumn;
-		this.toColumn = toColumn;
-		this.numCard = numCard;
-		
-		
-		
-		Column fromCol = state.columns[fromColumn];
-		Column toCol = state.columns[toColumn];
-		
-		if(fromCol.getNum() == 0) return false;
-		
-		card = fromCol.get(fromCol.getNum() - numCard);
-		suit = card % 4;
-		rank = card >> 2;
-		
-		int canMove = state.getFreeSpace();
-		if(toCol.getNum() == 0) {
-			int freecellSpace = 0, freeColSpace = 0;
-			for(int i=0; i<=3; i++) {
-				if(state.freecell[i] == 0) freecellSpace ++;
-			}
-			for(int i=0; i<8; i++) {
-				if(state.columns[i].getNum() == 0) freeColSpace ++;
+		try {
+			this.fromColumn = fromColumn;
+			this.toColumn = toColumn;
+			this.numCard = numCard;
+			
+			
+			
+			Column fromCol = state.columns[fromColumn];
+			Column toCol = state.columns[toColumn];
+			
+			if(fromCol.getNum() == 0) return false;
+			
+			card = fromCol.get(fromCol.getNum() - numCard);
+			suit = card % 4;
+			rank = card >> 2;
+			
+			int canMove = state.getFreeSpace();
+			if(toCol.getNum() == 0) {
+				int freecellSpace = 0, freeColSpace = 0;
+				for(int i=0; i<=3; i++) {
+					if(state.freecell[i] == 0) freecellSpace ++;
+				}
+				for(int i=0; i<8; i++) {
+					if(state.columns[i].getNum() == 0) freeColSpace ++;
+				}
+				
+				canMove = (freecellSpace + 1) * freeColSpace;
 			}
 			
-			canMove = (freecellSpace + 1) * freeColSpace;
+			if(numCard > canMove) return false;
+			if(toCol.getNum() == 0) return true;
+			
+			boolean isBlackCard = (suit == Column.CLUB || suit == Column.SPADES);
+			
+			return (isBlackCard != toCol.isBlack() && rank == toCol.rank() - 1);
+		}catch (Exception ex) {
+			return false;
 		}
-		
-		if(numCard > canMove) return false;
-		if(toCol.getNum() == 0) return true;
-		
-		boolean isBlackCard = (suit == Column.CLUB || suit == Column.SPADES);
-		
-		return (isBlackCard != toCol.isBlack() && rank == toCol.rank() - 1);
 	}
 	
 	/**
@@ -215,15 +219,19 @@ public class Move {
 	 * @param column
 	 */
 	public boolean isValidColumnToFreeCell(FreeCellState state, int column) {
-		short card = state.columns[column].get(state.columns[column].getNum() - 1);
-		
-		fromColumn = column;
-		this.card = card;
-		suit = card % 4;
-		rank = card >> 2;
-		
-		if(state.columns[column].getNum() == 0) return false;
-		return state.hasFreeCell();
+		try {
+			short card = state.columns[column].get(state.columns[column].getNum() - 1);
+			
+			fromColumn = column;
+			this.card = card;
+			suit = card % 4;
+			rank = card >> 2;
+			
+			if(state.columns[column].getNum() == 0) return false;
+			return state.hasFreeCell();
+		}catch(Exception ex) {
+			return false;
+		}
 	}
 	
 	/**
@@ -263,15 +271,19 @@ public class Move {
 	 * @param column
 	 */
 	public boolean isValidColumnToFoundation(FreeCellState state, int column) {
-		if(state.columns[column].getNum() == 0) return false;
-		short card = state.columns[column].get(state.columns[column].getNum() - 1);
-		
-		this.fromColumn = column;
-		this.card = card;
-		suit = card % 4;
-		rank = card >> 2;
-		if(rank == 1) return true;
-		return (state.foundation[suit] == rank - 1);
+		try {
+			if(state.columns[column].getNum() == 0) return false;
+			short card = state.columns[column].get(state.columns[column].getNum() - 1);
+			
+			this.fromColumn = column;
+			this.card = card;
+			suit = card % 4;
+			rank = card >> 2;
+			if(rank == 1) return true;
+			return (state.foundation[suit] == rank - 1);
+		}catch(Exception ex) {
+			return false;
+		}
 	}
 	/**
 	 * execute move from column to foundation
@@ -310,13 +322,17 @@ public class Move {
 	 * @return
 	 */
 	public boolean isValidFreeToFoundation(FreeCellState state, short card) {
-		if(card == 0) return false;
-		
-		this.card = card;
-		suit = card % 4;
-		rank = card >> 2;
-		
-		return (state.foundation[suit] == rank - 1);
+		try {
+			if(card == 0) return false;
+			
+			this.card = card;
+			suit = card % 4;
+			rank = card >> 2;
+			
+			return (state.foundation[suit] == rank - 1);
+		}catch(Exception ex) {
+			return false;
+		}
 	}
 	/**
 	 * execute move from freecell to foundation
@@ -357,19 +373,23 @@ public class Move {
 	 * @return
 	 */
 	public boolean isValidFreeCellToColumn(FreeCellState state, short card, int column) {
-		if (card == 0) return false;
-		
-		Column col = state.columns[column];
-		if(col.getNum() == 0) return true;
-		
-		toColumn = column;
-		this.card = card;
-		suit = card % 4;
-		rank = card >> 2;
-		
-		boolean isBlackCard = (suit == Column.CLUB || suit == Column.SPADES);
- 		
-		return (isBlackCard != col.isBlack() && rank == col.rank() - 1);
+		try {
+			if (card == 0) return false;
+			
+			Column col = state.columns[column];
+			if(col.getNum() == 0) return true;
+			
+			toColumn = column;
+			this.card = card;
+			suit = card % 4;
+			rank = card >> 2;
+			
+			boolean isBlackCard = (suit == Column.CLUB || suit == Column.SPADES);
+	 		
+			return (isBlackCard != col.isBlack() && rank == col.rank() - 1);
+		}catch(Exception ex) {
+			return false;
+		}
 	}
 	
 	/**
