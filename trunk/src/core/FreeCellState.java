@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.StringTokenizer;
+import core.Column;
 
 public class FreeCellState implements Comparable<FreeCellState> {
 	public short freecell[]; // 4 freecells
@@ -218,6 +219,13 @@ public class FreeCellState implements Comparable<FreeCellState> {
 		return true;
 	}
 	
+	public boolean setFoundation(short card) {
+		int suit = card % 4;
+		int rank = card >> 2;
+		foundation[suit] = (short)rank;
+		return true;
+	}
+	
 	/**
 	 * get key for state, use this function to compare between two state
 	 * @return
@@ -287,7 +295,7 @@ public class FreeCellState implements Comparable<FreeCellState> {
 			String line = sc.nextLine();
 			StringTokenizer token = new StringTokenizer(line);
 			for(int i=0; i<4; i++) insertFreeCell(Column.encodeCard(token.nextToken()));
-			for(int i=0; i<4; i++) insertFoundation(Column.encodeCard(token.nextToken()));
+			for(int i=0; i<4; i++) setFoundation(Column.encodeCard(token.nextToken()));
 			
 			// other lines, columns
 			while(sc.hasNextLine()) {
@@ -308,7 +316,7 @@ public class FreeCellState implements Comparable<FreeCellState> {
 	 */
 	public String toString() {
 		String ret = "";
-		for(int i=0; i<4; i++) ret += freecell[i] + " ";
+		for(int i=0; i<4; i++) ret += Column.decodeCard(freecell[i]) + " ";
 		for(int i=0; i<4; i++) ret += foundation[i] + " ";
 		ret += "\n";
 		int maxCol = 0;
@@ -317,8 +325,9 @@ public class FreeCellState implements Comparable<FreeCellState> {
 		}
 		for(int i=0; i<maxCol; i++) {
 			for(int j=0; j<8; j++) {
-				if(columns[sort[j]].getNum() > i)
-					ret += columns[sort[j]].get(i) + " ";
+				if(columns[sort[j]].getNum() > i) {
+					ret += Column.decodeCard(columns[sort[j]].get(i)) + " ";
+				}
 				else ret += "   ";
 			}
 			ret += "\n";

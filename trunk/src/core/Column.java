@@ -66,6 +66,18 @@ public class Column {
 		}
 	}
 	
+	public static String decodeCard(short card) {
+		if(card == 0) return "..";
+		String cardsRank = ".A23456789TJQK";
+		String cardsSuit = "CDHS";
+		String ret = "";
+		int suit = card % 4;
+		int rank = card >> 2;
+		ret += String.valueOf(cardsRank.charAt(rank)) + String.valueOf(cardsSuit.charAt(suit));
+		
+		return ret;
+	}
+	
 	/**
 	 * encode a card string to number
 	 */
