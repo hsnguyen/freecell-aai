@@ -85,8 +85,7 @@ public class iDFS {
 				}
 				moveStack.pop();
 			}
-			
-			move.undo(currentState);  		     
+			move.undo(currentState);
 		}
 
 		return false;                               
