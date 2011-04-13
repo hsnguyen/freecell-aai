@@ -447,6 +447,7 @@ public class Move {
 			// after get through freecell, check in all bottom of columns
 			// the condition to move to foundation is similar to the condition at freecell
 			for(int i=0; i<state.columns.length; i++) {
+				if(state.columns[i].getNum() == 0) continue;
 				short colCard = state.columns[i].get(state.columns[i].getNum() - 1);
 				int colSuit = colCard % 4;
 				int colRank = colCard >> 2;
