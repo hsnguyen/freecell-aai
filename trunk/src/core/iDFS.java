@@ -78,8 +78,22 @@ public class iDFS {
 		// try with each move
 		for (int i = 0; i < listValidMoves.size(); ++i) {
 			Move move = listValidMoves.get(i);
-			move.execute(currentState); 
-			
+			/*
+			System.out.println("===================================" + move.type );
+			if(move.type == 5) {
+				System.out.println("freecell to column card: " + move.card + ", column: " + move.toColumn);
+				for(int tao = 0; tao < 4; tao++) {
+					System.out.print(currentState.freecell[tao] + " ");
+				}
+				System.out.println();
+			}
+			System.out.println(currentState);
+			*/
+			move.execute(currentState);
+			/*
+			System.out.println(currentState);
+			System.out.println("===================================" );
+			*/
 			short[] key = (short[])currentState.key();
 			Integer exist = prev.get(key);
 			if (exist == null) {
@@ -92,7 +106,8 @@ public class iDFS {
 
 				prev.put(key, count); 
 				moveStack.push(move);               
-				if (visit(count, depth+1)) {  
+				if (visit(count, depth+1)) {
+					System.out.println("tund -> success!");
 					return true;
 				}
 				moveStack.pop();
