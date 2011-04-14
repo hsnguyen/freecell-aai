@@ -1,6 +1,7 @@
 package core;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.StringTokenizer;
@@ -72,7 +73,7 @@ public class FreeCellState implements Comparable<FreeCellState> {
 		return stateCopy;
 	}
 	
-	public Comparator<short[]> comparator() {
+	public static Comparator<short[]> comparator() {
 		return new Comparator<short[]>() {
 			// keys are the same length
 			public int compare(short[] key1, short[] key2) {
@@ -251,7 +252,39 @@ public class FreeCellState implements Comparable<FreeCellState> {
 		
 		return key;
 	}
-	
+	/**
+	 * Return raw key that simply reports full state as array of short.
+	 * <p>
+	 * Useful when analyzing and comparing board states with each other.
+	 */
+	public short[] rawkey() {
+		// must allow for up to 19 for each column (8*19=152). Plus 8 for
+		// Free and Foundation cells.
+		short key[] = new short[160];
+		
+		int idx = 0;
+		for (int i = 0; i < 4; i++) { 
+			key[idx++] = freecell[i];
+		}
+		for (int i = 0; i < 4; i++) {
+			key[idx++] = foundation[i];
+		}
+		
+		// place in order.
+		for (int i = 0; i < columns.length; i++) {
+			Column col = columns[i];  // UNORDERED
+			int sz = col.getNum();
+			for (int j = 0; j < sz; j++) {
+				key[idx++] = col.get(j);
+			}
+			while (sz < 19) {
+				key[idx++] = 0;
+				sz++;
+			}
+		}
+		
+		return key;
+	}	
 	/**
 	 * set score for state
 	 * @param score
@@ -291,7 +324,7 @@ public class FreeCellState implements Comparable<FreeCellState> {
 	 * get initial state from file
 	 * @param filename
 	 */
-	public void getInitialState(String filename) {
+	public void getInitialState(String filename) throws IOException{
 		try {
 			java.util.Scanner sc = new java.util.Scanner(new File(filename));
 			// first line, 4 value of freecells, 4 value of foundation
@@ -310,7 +343,10 @@ public class FreeCellState implements Comparable<FreeCellState> {
 				}
 			}
 			sortColumn();
-		} catch(Exception e){}
+		}
+		catch (IOException e){
+			throw e;
+		}
 	}
 	
 	/**

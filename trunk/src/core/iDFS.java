@@ -10,7 +10,7 @@ import java.util.TreeMap;
 public class iDFS {
 	
 	/** maximum number of visited states that are saved */
-	final int MAX_NUMBER_OF_STATES = 1000000;
+	final int MAX_NUMBER_OF_STATES = 200000;
 	
 	/** depth of DFS, visiting */
 	final int DEPTH = 6;
@@ -180,7 +180,15 @@ public class iDFS {
 		while (!traceStack.isEmpty()) {
 			trace = traceStack.pop();
 			for (Iterator<Move> it = trace.moves.iterator(); it.hasNext(); ) {
-				result.add(it.next());
+				Move tmp = it.next();
+				result.add(tmp);
+				System.out.println("Normal move: "+ tmp);
+				if (tmp.automoves.size() > 0)
+					for(int i = 0 ; i < tmp.automoves.size(); i++){
+						result.add(tmp.automoves.get(i));
+						System.out.println("Automove: " + tmp.automoves.get(i));
+					}				
+				
 			}
 		}
 		

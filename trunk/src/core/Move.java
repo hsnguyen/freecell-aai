@@ -25,7 +25,10 @@ public class Move {
 	int toColumn; // move to column
 	int numCard; // number of card move from column to column
 	ArrayList<Move> automoves = new ArrayList<Move>();
-	
+	boolean isAuto = true;
+	public void setAuto(boolean isAuto){
+		this.isAuto = isAuto;
+	}
 	/**
 	 * there are 5 type of move
 	 * 1. Column to Column
@@ -76,7 +79,7 @@ public class Move {
 				break;
 		}
 		// check automove
-		automove(state);
+		if(isAuto) automove(state);
 		
 		return ret;
 	}
@@ -88,7 +91,7 @@ public class Move {
 	 */
 	public boolean undo (FreeCellState state) {
 		//undo automove before undo others
-		undoAutoMove(state);
+		if(isAuto) undoAutoMove(state);
 		switch (type){
 			case 1:
 				return undoColumnToColumn(state);
@@ -111,19 +114,25 @@ public class Move {
 	public String toString() {
 		String ret = "";
 		if(type == 1) {
-			ret = "Move " + numCard + " cards from column: " + (fromColumn + 1) + " to column: " + (toColumn + 1);
+			ret = "Move " + numCard + " cards with head " + Column.decodeCard(card) + " from column: " + (fromColumn + 1) + " to column: " + (toColumn + 1);
 		}
 		else if(type == 2) {
-			ret = "Move bottom card from column: " + (fromColumn + 1) + " to freecell";
+			ret = "Move bottom card" + Column.decodeCard(card) + " from column: " + (fromColumn + 1) + " to freecell";
 		}
 		else if(type == 3) {
-			ret = "Move bottom card from column: " + (fromColumn + 1) + " to foundation";
+			ret = "Move bottom card" + Column.decodeCard(card) + " from column: " + (fromColumn + 1) + " to foundation";
 		}
 		else if(type == 4) {
 			ret = "Move card: " + Column.decodeCard(card) + " from frecell to foundation";
 		}
-		else {
+		else if(type == 5){
 			ret = "Move card: " + Column.decodeCard(card) + " from frecell to column: " + (toColumn + 1);
+		}
+		else {
+			ret = "end of game";
+		}
+		if(!this.automoves.isEmpty()) {
+			ret += " [automove]";
 		}
 		return ret;
 	}
@@ -492,6 +501,7 @@ public class Move {
 				
 				if(canMove) {
 					Move ftf = new Move(4);
+					ftf.setAuto(false);
 					if(ftf.isValidFreeToFoundation(state, freeCard)) {
 						ftf.execute(state, freeCard, -1, -1, 1);
 						automoves.add(ftf);
@@ -521,6 +531,7 @@ public class Move {
 				
 				if(canMove) {
 					Move ctf = new Move(3);
+					ctf.setAuto(false);
 					if(ctf.isValidColumnToFoundation(state, i)) {
 						//ftf.execute(state, colCard, -1, -1, 1);
 						ctf.execute(state, (short)-1, i, -1, 1);
@@ -530,6 +541,7 @@ public class Move {
 				} 
 			}
 		}
+		//System.out.println("4``````````" + automoves.size());
 	}
 	
 	/**
@@ -541,6 +553,6 @@ public class Move {
 			Move m = automoves.get(i);
 			m.undo(state);
 		}
-		automoves.clear();
+		//automoves.clear();
 	}
 }
