@@ -104,6 +104,29 @@ public class Move {
 		
 		return false;
 	}
+	
+	/**
+	 * to String 
+	 */
+	public String toString() {
+		String ret = "";
+		if(type == 1) {
+			ret = "Move " + numCard + " cards from column: " + (fromColumn + 1) + " to column: " + (toColumn + 1);
+		}
+		else if(type == 2) {
+			ret = "Move bottom card from column: " + (fromColumn + 1) + " to freecell";
+		}
+		else if(type == 3) {
+			ret = "Move bottom card from column: " + (fromColumn + 1) + " to foundation";
+		}
+		else if(type == 4) {
+			ret = "Move card: " + Column.decodeCard(card) + " from frecell to foundation";
+		}
+		else {
+			ret = "Move card: " + Column.decodeCard(card) + " from frecell to column: " + toColumn + 1;
+		}
+		return ret;
+	}
 
 //======================================================================================================================
 // 1. move from column to column
