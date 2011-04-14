@@ -10,9 +10,10 @@ public class FreeCellState implements Comparable<FreeCellState> {
 	public short freecell[]; // 4 freecells
 	public short foundation[]; // 4 foundations
 	public Column columns[]; // 8 columns
-	private int sort[]; // sort column -> get similar key when compare 2 similar state
+	public int sort[]; // sort column -> get similar key when compare 2 similar state
 	public int score; // score of state
 	private Object store; // store last state
+	
 	
 	/**
 	 * default constructor
