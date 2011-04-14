@@ -372,6 +372,7 @@ public class FreeCellState implements Comparable<FreeCellState> {
 		
 		// freecell to column
 		for(int i=3; i>=0; i--) {
+			if(freecell[i] == 0) break;
 			for(int j = 0; j<8; j++) {
 				Move m = new Move(5);
 				if(m.isValidFreeCellToColumn(this, freecell[i], j))
