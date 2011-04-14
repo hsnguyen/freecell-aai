@@ -409,6 +409,7 @@ public class Move {
 		//System.out.println("==================");
 		//System.out.println("move card: " + Column.decodeCard(card) + ", column: " + column);
 		//System.out.println(state.toString());
+		
 		state.removeFreeCell(card);
 		state.columns[column].add(card);
 		//System.out.println(state.toString());
