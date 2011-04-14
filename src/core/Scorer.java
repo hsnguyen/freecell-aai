@@ -11,8 +11,8 @@ public class Scorer {
 	public int eval(FreeCellState state) {
 		
 		// mark the next cards that could be moved in foundation
-		boolean[][] isNextCard = new boolean[14][4];
-		for (int i = 0; i < 14; ++i) {
+		boolean[][] isNextCard = new boolean[15][4];
+		for (int i = 0; i < 15; ++i) {
 			Arrays.fill(isNextCard[i], false);
 		}
 		isNextCard[state.foundation[0]+1][0] = true;

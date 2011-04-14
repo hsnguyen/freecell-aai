@@ -135,6 +135,7 @@ public class Move {
 			rank = card >> 2;
 			
 			int canMove = state.getFreeSpace();
+			/*
 			if(toCol.getNum() == 0) {
 				int freecellSpace = 0, freeColSpace = 0;
 				for(int i=0; i<=3; i++) {
@@ -146,7 +147,7 @@ public class Move {
 				
 				canMove = (freecellSpace + 1) * freeColSpace;
 			}
-			
+			*/
 			if(numCard > canMove) return false;
 			if(toCol.getNum() == 0) return true;
 			
