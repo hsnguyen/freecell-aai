@@ -15,7 +15,7 @@ public class Test {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		FreeCellState state = new FreeCellState();
-		state.getInitialState("31465.txt");
+		state.getInitialState("input1.txt");
 		System.out.println(state.toString());
 		
 		//Move m = new Move(1);
@@ -37,5 +37,4 @@ public class Test {
 			}
 		}
 	}
-
 }
