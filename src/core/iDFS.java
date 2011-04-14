@@ -62,11 +62,13 @@ public class iDFS {
 			
 			int score = scorer.eval(currentState);
 			FreeCellState aCopy = currentState.clone();
+			// set score of state
 			aCopy.score(score);
 			// store trace of this state
 			aCopy.store(new Trace((Stack<Move>)moveStack.clone(), lastTrace));
 			// insert state into queue
 			pQueue.add(aCopy);
+			
 			return false;
 		}
 
@@ -80,6 +82,7 @@ public class iDFS {
 			// apply move to current state.
 			move.execute(currentState); 
 			
+			// 
 			short[] key = (short[])currentState.key();
 			Integer exist = prev.get(key);
 			if (exist == null) {
@@ -112,7 +115,7 @@ public class iDFS {
 	 * @param comparator
 	 */
 	@SuppressWarnings("unchecked")
-	public Stack<Move> solve(FreeCellState startedState, Scorer scorer, 
+	public ArrayList<Move> solve(FreeCellState startedState, Scorer scorer, 
 			Comparator<short[]> comparator) {
 		
 		currentState = startedState;
@@ -157,16 +160,15 @@ public class iDFS {
 				nextTrace = new Trace((Stack<Move>)moveStack.clone(), nextTrace);
 				currentState.store(nextTrace);
 				
-				moveStack = traceBack(currentState);
-				return moveStack;
+				return traceBack(currentState);
 			}
 		}	
 		
 		return null;
 	}
 	
-	public static Stack<Move> traceBack(FreeCellState finalState) {
-		Stack<Move> result = new Stack<Move>();
+	public static ArrayList<Move> traceBack(FreeCellState finalState) {
+		ArrayList<Move> result = new ArrayList<Move>();
 		Trace trace = (Trace)finalState.storeData();
 		
 		Stack<Trace> traceStack = new Stack<Trace>();
@@ -178,7 +180,7 @@ public class iDFS {
 		while (!traceStack.isEmpty()) {
 			trace = traceStack.pop();
 			for (Iterator<Move> it = trace.moves.iterator(); it.hasNext(); ) {
-				result.push(it.next());
+				result.add(it.next());
 			}
 		}
 		
