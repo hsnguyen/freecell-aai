@@ -79,14 +79,10 @@ public class iDFS {
 		for (int i = 0; i < listValidMoves.size(); ++i) {
 			Move move = listValidMoves.get(i);
 			/*
-			System.out.println("===================================" + move.type );
-			if(move.type == 5) {
-				System.out.println("freecell to column card: " + move.card + ", column: " + move.toColumn);
-				for(int tao = 0; tao < 4; tao++) {
-					System.out.print(currentState.freecell[tao] + " ");
-				}
-				System.out.println();
-			}
+			System.out.println("===================================");
+			System.out.println("type: " + move.type + ", card: " + Column.decodeCard(move.card) 
+					+ ", fromColumn: " + move.fromColumn 
+					+ ", toColumn: " + move.toColumn);
 			System.out.println(currentState);
 			*/
 			move.execute(currentState);

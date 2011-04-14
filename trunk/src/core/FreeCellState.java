@@ -121,7 +121,8 @@ public class FreeCellState implements Comparable<FreeCellState> {
 			if(columns[i].getNum() == 0) freeColSpace ++;
 		}
 		
-		return (freecellSpace + 1) * (freeColSpace + 1);
+		//return (freecellSpace + 1) * (freeColSpace + 1);
+		return freecellSpace + freeColSpace + 1;
 	}
 	/**
 	 * remove a card from freecell
@@ -411,9 +412,10 @@ public class FreeCellState implements Comparable<FreeCellState> {
 					isCurrentBlack = isNextBlack;
 				}
 				
-				boolean checkMoveToBlank = false; // check if there is a move to blank earlier
+				
 				// check all position to move
 				for(int toPos = 0; toPos < 8; toPos ++) {
+					boolean checkMoveToBlank = false; // check if there is a move to blank earlier
 					// if they are same column, continue search others column
 					if(toPos == fromPos) continue;
 					// this move is not necessary
