@@ -123,7 +123,7 @@ public class Move {
 			ret = "Move card: " + Column.decodeCard(card) + " from frecell to foundation";
 		}
 		else {
-			ret = "Move card: " + Column.decodeCard(card) + " from frecell to column: " + toColumn + 1;
+			ret = "Move card: " + Column.decodeCard(card) + " from frecell to column: " + (toColumn + 1);
 		}
 		return ret;
 	}
