@@ -10,7 +10,7 @@ import java.util.TreeMap;
 public class iDFS {
 	
 	/** maximum number of visited states that are saved */
-	final int MAX_NUMBER_OF_STATES = 200000;
+	final int MAX_NUMBER_OF_STATES = 1000000;
 	
 	/** depth of DFS, visiting */
 	final int DEPTH = 6;
@@ -53,6 +53,7 @@ public class iDFS {
 			
 			// clear memory
 			if (prev.size() > MAX_NUMBER_OF_STATES) {
+				Logger.write(System.out, "iDFS.visit(): clear memory\n");
 				prev.clear();
 				System.gc();
 			}
@@ -77,19 +78,11 @@ public class iDFS {
 		
 		// try with each move
 		for (int i = 0; i < listValidMoves.size(); ++i) {
+			// get i(th) move
 			Move move = listValidMoves.get(i);
-			/*
-			System.out.println("===================================");
-			System.out.println("type: " + move.type + ", card: " + Column.decodeCard(move.card) 
-					+ ", fromColumn: " + move.fromColumn 
-					+ ", toColumn: " + move.toColumn);
-			System.out.println(currentState);
-			*/
-			move.execute(currentState);
-			/*
-			System.out.println(currentState);
-			System.out.println("===================================" );
-			*/
+			// apply move to current state.
+			move.execute(currentState); 
+			
 			short[] key = (short[])currentState.key();
 			Integer exist = prev.get(key);
 			if (exist == null) {
@@ -103,11 +96,11 @@ public class iDFS {
 				prev.put(key, count); 
 				moveStack.push(move);               
 				if (visit(count, depth+1)) {
-					System.out.println("tund -> success!");
 					return true;
 				}
 				moveStack.pop();
 			}
+			
 			move.undo(currentState);
 		}
 
