@@ -385,7 +385,9 @@ public class Move {
 			rank = card >> 2;
 			
 			boolean isBlackCard = (suit == Column.CLUB || suit == Column.SPADES);
-	 		
+			if(card == 31) {
+				System.out.println("check move card: " + card + "  column: " + column + "  " + Column.decodeCard(col.get(col.getNum()-1)) + "   " + col.getNum());
+			}
 			return (isBlackCard != col.isBlack() && rank == col.rank() - 1);
 		}catch(Exception ex) {
 			return false;
@@ -402,8 +404,13 @@ public class Move {
 	public boolean FreeCellToColumn(FreeCellState state, short card, int column) {
 		if(!isValidFreeCellToColumn(state, card, column)) return false;
 		
+		System.out.println("==================");
+		System.out.println("move card: " + Column.decodeCard(card) + ", column: " + column);
+		System.out.println(state.toString());
 		state.removeFreeCell(card);
 		state.columns[column].add(card);
+		System.out.println(state.toString());
+		System.out.println("==================");
 		
 		return true;
 	}
@@ -414,9 +421,13 @@ public class Move {
 	 * @return
 	 */
 	public boolean undoFreeCellToColumn(FreeCellState state) {
-		state.columns[toColumn].remove();
+		System.out.println("==================");
+		System.out.println("undo move card: " + Column.decodeCard(card) + ", column: " + toColumn);
+		System.out.println(state.toString());
 		state.insertFreeCell(card);
-		
+		state.columns[toColumn].remove();
+		System.out.println(state.toString());
+		System.out.println("==================");
 		return true;
 	}
 

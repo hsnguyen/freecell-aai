@@ -67,6 +67,7 @@ public class Column {
 	}
 	
 	public static String decodeCard(short card) {
+		
 		if(card == 0) return "..";
 		String cardsRank = ".A23456789TJQK";
 		String cardsSuit = "CDHS";

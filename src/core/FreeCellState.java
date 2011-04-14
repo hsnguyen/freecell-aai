@@ -321,14 +321,14 @@ public class FreeCellState implements Comparable<FreeCellState> {
 		ret += "\n";
 		int maxCol = 0;
 		for(int i=0; i<8; i++) {
-			if (maxCol < columns[sort[i]].getNum()) maxCol = columns[sort[i]].getNum();  
+			if (maxCol < columns[i].getNum()) maxCol = columns[i].getNum();  
 		}
 		for(int i=0; i<maxCol; i++) {
 			for(int j=0; j<8; j++) {
-				if(columns[sort[j]].getNum() > i) {
-					ret += Column.decodeCard(columns[sort[j]].get(i)) + " ";
+				if(columns[j].getNum() > i) {
+					ret += Column.decodeCard(columns[j].get(i)) + " ";
 				}
-				else ret += "   ";
+				else ret += ".. ";
 			}
 			ret += "\n";
 		}
@@ -374,9 +374,8 @@ public class FreeCellState implements Comparable<FreeCellState> {
 		for(int i=3; i>=0; i--) {
 			for(int j = 0; j<8; j++) {
 				Move m = new Move(5);
-				if(m.isValidFreeCellToColumn(this, freecell[i], j)) {
+				if(m.isValidFreeCellToColumn(this, freecell[i], j))
 					ret.add(m);
-				}
 			}
 		}
 		
