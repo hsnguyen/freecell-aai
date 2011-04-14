@@ -11,7 +11,7 @@ public class FreeCellState implements Comparable<FreeCellState> {
 	public short foundation[]; // 4 foundations
 	public Column columns[]; // 8 columns
 	private int sort[]; // sort column -> get similar key when compare 2 similar state
-	private int score; // score of state
+	public int score; // score of state
 	private Object store; // store last state
 	
 	/**
@@ -90,7 +90,9 @@ public class FreeCellState implements Comparable<FreeCellState> {
 	}
 	
 	public int compareTo(FreeCellState state) {
-		return toString().compareTo(state.toString());
+		if (this.score > state.score) return 1;
+		else if (this.score < state.score) return -1; 
+		else return 0;
 	}
 	
 	public void sortColumn() {
@@ -121,8 +123,7 @@ public class FreeCellState implements Comparable<FreeCellState> {
 			if(columns[i].getNum() == 0) freeColSpace ++;
 		}
 		
-		//return (freecellSpace + 1) * (freeColSpace + 1);
-		return freecellSpace + freeColSpace + 1;
+		return freecellSpace + freeColSpace;
 	}
 	/**
 	 * remove a card from freecell
@@ -421,13 +422,13 @@ public class FreeCellState implements Comparable<FreeCellState> {
 					// this move is not necessary
 					if(ccol.getNum() == cardNum && columns[toPos].getNum() == 0) continue;
 					
-					if(!checkMoveToBlank) {
-						if(columns[toPos].getNum() == 0) {
+					if (!checkMoveToBlank) {
+						if (columns[toPos].getNum() == 0) {
 							checkMoveToBlank = true;
 						}
 						
 						Move m = new Move(1);
-						if(m.isValidColumnToColumn(this, fromPos, toPos, cardNum)) {
+						if (m.isValidColumnToColumn(this, fromPos, toPos, cardNum)) {
 							ret.add(m);
 						}
 					}

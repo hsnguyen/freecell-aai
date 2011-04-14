@@ -3,7 +3,7 @@ package core;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.Map.Entry;
+import java.util.PriorityQueue;
 import java.util.Stack;
 import java.util.TreeMap;
 
@@ -25,7 +25,7 @@ public class iDFS {
 	 * Next states to be visited are inserted into priority queue 
 	 * according to their evaluation in increasing order.
 	 */
-	private TreeMap<Integer, FreeCellState> pQueue;
+	private PriorityQueue<FreeCellState> pQueue;
 	
 	/** last trace of state */
 	private Trace lastTrace = null;
@@ -53,7 +53,6 @@ public class iDFS {
 			
 			// clear memory
 			if (prev.size() > MAX_NUMBER_OF_STATES) {
-				Logger.write(System.out, "iDFS.visit(): clear memory\n");
 				prev.clear();
 				System.gc();
 			}
@@ -63,18 +62,16 @@ public class iDFS {
 			
 			int score = scorer.eval(currentState);
 			FreeCellState aCopy = currentState.clone();
+			aCopy.score(score);
 			// store trace of this state
 			aCopy.store(new Trace((Stack<Move>)moveStack.clone(), lastTrace));
 			// insert state into queue
-			pQueue.put(score, aCopy);
+			pQueue.add(aCopy);
 			return false;
 		}
 
 		// get all available moves
 		ArrayList<Move> listValidMoves = currentState.validMoves();
-		
-		Logger.write(System.out, "iDFS.visit(): number of valid moves = " 
-				+ listValidMoves.size() + "\n");
 		
 		// try with each move
 		for (int i = 0; i < listValidMoves.size(); ++i) {
@@ -125,20 +122,17 @@ public class iDFS {
 		
 		moveStack = new Stack<Move>();
 		
-		pQueue = new TreeMap<Integer, FreeCellState>();
+		pQueue = new PriorityQueue<FreeCellState>();
 		
-		pQueue.put(this.scorer.eval(currentState), currentState.clone());
+		FreeCellState aCopy = currentState.clone();
+		aCopy.score(this.scorer.eval(currentState));
+		pQueue.add(aCopy);
 		
 		int lastBoardID;
 		while (pQueue.size() > 0) {
-		
+			
 			// get the first entry in current stack of FreeCell State
-			Entry<Integer, FreeCellState> firstEntry = pQueue.firstEntry();
-			
-			currentState = firstEntry.getValue();
-			
-			// remove the first entry of current stack
-			pQueue.remove(firstEntry.getKey());
+			currentState = pQueue.poll();
 			
 			// last must be set PRIOR to invoking search, since it is used for
 			// linking solutions. moveStack must be instantiated anew also, so
