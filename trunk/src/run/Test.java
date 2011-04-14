@@ -1,5 +1,6 @@
 package run;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 import core.FreeCellState;
@@ -15,7 +16,7 @@ public class Test {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		FreeCellState state = new FreeCellState();
-		state.getInitialState("input1.txt");
+		state.getInitialState("31465.txt");
 		System.out.println(state.toString());
 		
 		//Move m = new Move(1);
@@ -24,16 +25,13 @@ public class Test {
 		//m.undo(state);
 		//System.out.println(state.toString());
 		
-		Stack<Move> moves = new iDFS().solve(state, new Scorer(), 
+		ArrayList<Move> moves = new iDFS().solve(state, new Scorer(), 
 				state.comparator());
 		if (moves == null) System.out.println("No solution.");
 		else {
 			System.out.println("Yes.");
-			int i = 0;
-			while (!moves.empty()) {
-				Move abc = moves.pop();
-				System.out.println("Move " + (i++));
-				System.out.println(abc.toString());
+			for (int i = 0; i < moves.size(); ++i) {
+				System.out.println("Move " + i + ": " + moves.get(i).toString());
 			}
 		}
 	}
