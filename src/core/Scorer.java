@@ -39,6 +39,6 @@ public class Scorer {
 		
 		// add moves for each of the piles still next cards.
 		return value + (22 - state.foundation[0] - state.foundation[1] - 
-							state.foundation[2] - state.foundation[3]);
+							state.foundation[2] - state.foundation[3]);				
 	}
 }

@@ -117,7 +117,8 @@ public class Move {
 	 * @param numCard
 	 * @return
 	 */
-	public boolean isValidColumnToColumn(FreeCellState state, int fromColumn, int toColumn, int numCard) {
+	public boolean isValidColumnToColumn(FreeCellState state, int fromColumn, 
+			int toColumn, int numCard) {
 		try {
 			this.fromColumn = fromColumn;
 			this.toColumn = toColumn;
@@ -134,20 +135,21 @@ public class Move {
 			suit = card % 4;
 			rank = card >> 2;
 			
-			int canMove = state.getFreeSpace();
-			/*
-			if(toCol.getNum() == 0) {
-				int freecellSpace = 0, freeColSpace = 0;
-				for(int i=0; i<=3; i++) {
-					if(state.freecell[i] == 0) freecellSpace ++;
-				}
-				for(int i=0; i<8; i++) {
-					if(state.columns[i].getNum() == 0) freeColSpace ++;
-				}
-				
-				canMove = (freecellSpace + 1) * freeColSpace;
+			int canMove;
+			int freecellSpace = 0, freeColSpace = 0;
+			for(int i=0; i<=3; i++) {
+				if(state.freecell[i] == 0) freecellSpace ++;
 			}
-			*/
+			for(int i=0; i<8; i++) {
+				if(state.columns[i].getNum() == 0) freeColSpace ++;
+			}
+			
+			if(toCol.getNum() == 0) {
+				canMove = (freecellSpace + 1) * freeColSpace;
+			} else {
+				canMove = (freecellSpace + 1) * (freeColSpace + 1);
+			}
+			
 			if(numCard > canMove) return false;
 			if(toCol.getNum() == 0) return true;
 			
