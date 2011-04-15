@@ -114,26 +114,26 @@ public class Move {
 	public String toString() {
 		String ret = "";
 		if(type == 1) {
-			ret = "Move " + numCard + " cards with head " + Column.decodeCard(card) + " from column: " + (fromColumn + 1) + " to column: " + (toColumn + 1);
+			ret = "Di chuyển " + numCard + " con bài với con đầu là " + Column.toVN(card) + " từ cột " + (fromColumn + 1) + " đến cột " + (toColumn + 1);
 		}
 		else if(type == 2) {
-			ret = "Move bottom card" + Column.decodeCard(card) + " from column: " + (fromColumn + 1) + " to freecell";
+			ret = "Di chuyển con bài " + Column.toVN(card) + " ở dưới cùng từ cột " + (fromColumn + 1) + " đến freecell";
 		}
 		else if(type == 3) {
-			ret = "Move bottom card" + Column.decodeCard(card) + " from column: " + (fromColumn + 1) + " to foundation";
+			ret = "Di chuyển con bài " + Column.toVN(card) + " ở dưới cùng từ cột " + (fromColumn + 1) + " đến foundation";
 		}
 		else if(type == 4) {
-			ret = "Move card: " + Column.decodeCard(card) + " from frecell to foundation";
+			ret = "Di chuyển con bài " + Column.toVN(card) + " từ frecell đến foundation";
 		}
 		else if(type == 5){
-			ret = "Move card: " + Column.decodeCard(card) + " from frecell to column: " + (toColumn + 1);
+			ret = "Di chuyển con bài " + Column.toVN(card) + " từ frecell đến cột " + (toColumn + 1);
 		}
 		else {
-			ret = "end of game";
+			ret = "Kết thúc trò chơi!";
 		}
-		if(!this.automoves.isEmpty()) {
-			ret += " [automove]";
-		}
+		//if(!this.automoves.isEmpty()) {
+		//	ret += " [di chuyển tự động]";
+		//}
 		return ret;
 	}
 
