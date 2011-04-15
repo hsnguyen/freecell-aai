@@ -65,6 +65,16 @@ public class Column {
 			cards[i] = encodeCard(tmpCards[i]);
 		}
 	}
+	public static String toVN(short card){
+		String vn = new String();
+		if(card == 0) return "..";
+		String cardRank[] = {".","Át","Hai","Ba","Bốn","Năm","Sáu","Bảy","Tám","Chín","Mười","J","Q","K"};
+		String cardSuit[] = {"Nhép","Rô","Cơ","Bích"};
+		int suit = card%4;
+		int rank = card>>2;
+		vn += cardRank[rank]+ " " + cardSuit[suit]; 
+		return vn;
+	}
 	
 	public static String decodeCard(short card) {
 		
