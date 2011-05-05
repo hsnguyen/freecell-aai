@@ -49,7 +49,6 @@ public class NextModifier implements ActionListener{
 			Move move = (Move) dlm.get(i);
 			move.setAuto(false);
 			move.execute(node);
-			System.out.println(node.keyToString());
 		}
 		list.setSelectedIndex(idx+1);
 		drawer.setNode(node);
