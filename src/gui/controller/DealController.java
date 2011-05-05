@@ -79,8 +79,11 @@ public class DealController implements ActionListener {
 		try {
 			fcs.getInitialState(fileName);
 			// Compute the solution.
-			iDFS sd = new iDFS();			
+			iDFS sd = new iDFS();	
+			long time1 = System.currentTimeMillis();
 			ArrayList<Move> st = sd.solve(fcs, new Scorer(), FreeCellState.comparator());
+			long time2 = System.currentTimeMillis();
+			System.out.println("time=" + (time2 - time1));
 
 			if (st == null) {
 		        JOptionPane jop = new JOptionPane();
@@ -100,6 +103,7 @@ public class DealController implements ActionListener {
 			pnl.validate();
 			frame.add(pnl);*/
 			//------------------------------------------------------------------
+			System.out.println(st.size());
 			DefaultListModel dlm = new DefaultListModel();
 			for (int i =0; i < st.size(); i++){
 				dlm.addElement(st.get(i));

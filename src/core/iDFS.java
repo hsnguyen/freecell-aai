@@ -187,8 +187,7 @@ public class iDFS {
 					for(int i = 0 ; i < tmp.automoves.size(); i++){
 						result.add(tmp.automoves.get(i));
 						System.out.println("Automove: " + tmp.automoves.get(i));
-					}				
-				
+					}
 			}
 		}
 		

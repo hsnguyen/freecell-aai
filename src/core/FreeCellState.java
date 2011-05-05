@@ -252,6 +252,17 @@ public class FreeCellState implements Comparable<FreeCellState> {
 		
 		return key;
 	}
+	
+	public String keyToString() {
+		String ret = "";
+		short[] key = (short[]) key();
+		for(int i=0; i<67; i++) {
+			if(i >= 8 && key[i] == 0)
+				ret += "-1 ";
+			else ret += key[i] + " ";
+		}
+		return ret;
+	}
 	/**
 	 * Return raw key that simply reports full state as array of short.
 	 * <p>
