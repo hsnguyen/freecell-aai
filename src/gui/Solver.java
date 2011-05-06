@@ -60,8 +60,8 @@ public class Solver {
 		//2 buttons next and pre
 		JPanel pnl = new JPanel();
 		pnl.setBounds(0,0,700,100);
-		JButton next = new JButton("Next");
-		JButton prev = new JButton("Pre");
+		JButton next = new JButton("Tiếp tục");
+		JButton prev = new JButton("Trở lại");
 
 		pnl.add(prev);
 		pnl.add(next);
@@ -92,18 +92,18 @@ public class Solver {
 		//======================================================================
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
-		JMenu fileMenu = new JMenu("File");
+		JMenu fileMenu = new JMenu("Lựa chọn");
 		menuBar.add(fileMenu);
-		JMenu viewMenu = new JMenu("View");
+		JMenu viewMenu = new JMenu("Hiển thị");
 		menuBar.add(viewMenu);
 		
-		JMenuItem openAction = new JMenuItem("Open");
-		JMenuItem exitAction = new JMenuItem("Exit");
+		JMenuItem openAction = new JMenuItem("Chọn file");
+		JMenuItem exitAction = new JMenuItem("Thoát");
 		
 		fileMenu.add(openAction);
 		fileMenu.add(exitAction);
 		
-		JCheckBoxMenuItem checkAction = new JCheckBoxMenuItem("Show Move List");
+		JCheckBoxMenuItem checkAction = new JCheckBoxMenuItem("Danh sách các bước di chuyển");
 		viewMenu.add(checkAction);
 		openAction.addActionListener(new DealController(frame, drawer, list, next, prev));
 		exitAction.addActionListener(new ActionListener() {

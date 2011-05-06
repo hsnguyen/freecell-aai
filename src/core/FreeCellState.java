@@ -12,8 +12,9 @@ public class FreeCellState implements Comparable<FreeCellState> {
 	public short foundation[]; // 4 foundations
 	public Column columns[]; // 8 columns
 	public int sort[]; // sort column -> get similar key when compare 2 similar state
-	public int score; // score of state
+	public double score; // score of state
 	private Object store; // store last state
+	private int numberOfValidMoves;
 	
 	
 	/**
@@ -27,6 +28,7 @@ public class FreeCellState implements Comparable<FreeCellState> {
 			columns[i] = new Column();
 		}
 		sort = new int[]{0,1,2,3,4,5,6,7};
+		numberOfValidMoves = 0;
 	}
 	
 	/**
@@ -40,6 +42,7 @@ public class FreeCellState implements Comparable<FreeCellState> {
 			columns[i] = new Column(state.columns[i]);
 		}
 		sort = state.sort;
+		numberOfValidMoves = state.numberOfValidMoves;
 	}
 	
 	/**
@@ -55,6 +58,7 @@ public class FreeCellState implements Comparable<FreeCellState> {
 		this.sort = new int[]{0,1,2,3,4,5,6,7};
 		
 		sortColumn();
+		numberOfValidMoves = 0;
 	}
 	
 	public FreeCellState clone() {
@@ -69,6 +73,7 @@ public class FreeCellState implements Comparable<FreeCellState> {
 			foundationCopy[i] = foundation[i];
 		}
 		FreeCellState stateCopy = new FreeCellState(freeCellCopy, foundationCopy, columnCopy);
+		stateCopy.numberOfValidMoves = this.numberOfValidMoves;
 		
 		return stateCopy;
 	}
@@ -89,6 +94,10 @@ public class FreeCellState implements Comparable<FreeCellState> {
 				return 0;
 			}
 		};
+	}
+	
+	public int getNumberOfValidMoves() {
+		return numberOfValidMoves;
 	}
 	
 	public int compareTo(FreeCellState state) {
@@ -235,7 +244,7 @@ public class FreeCellState implements Comparable<FreeCellState> {
 	 * @return
 	 */
 	public Object key() {
-		short[] key = new short[69];
+		short[] key = new short[68];
 		int index = 0;
 		// 4 freecell
 		for(int i=0; i < 4; i++) key[index++] = freecell[i];
@@ -255,11 +264,31 @@ public class FreeCellState implements Comparable<FreeCellState> {
 	
 	public String keyToString() {
 		String ret = "";
-		short[] key = (short[]) key();
-		for(int i=0; i<67; i++) {
-			if(i >= 8 && key[i] == 0)
-				ret += "-1 ";
-			else ret += key[i] + " ";
+		
+		int index = 0;
+		// 4 freecell
+		for(int i=0; i < 4; i++) {
+			ret += (freecell[i] + " ");
+			++index;
+		}
+		// 4 foundation
+		for(int i=0; i < 4; i++) {
+			ret += (foundation[i] + " ");
+			++index;
+		}
+		// 8 columns, two columns is separated by -1
+		for(int i=0; i < 8; i++) {
+			Column col = new Column(columns[sort[i]]);
+			for(int j=0; j<col.getNum(); j++) {
+				ret += (col.get(j) + " ");
+				++index;
+			}
+			ret += "-1 ";
+			++index;
+		}
+
+		for(; index<68; index++) {
+			ret += "-1 ";
 		}
 		return ret;
 	}
@@ -300,7 +329,7 @@ public class FreeCellState implements Comparable<FreeCellState> {
 	 * set score for state
 	 * @param score
 	 */
-	public void score(int score) {
+	public void score(double score) {
 		this.score = score;
 	}
 	
@@ -308,7 +337,7 @@ public class FreeCellState implements Comparable<FreeCellState> {
 	 * get state's score
 	 * @return
 	 */
-	public int score() {
+	public double score() {
 		return this.score;
 	}
 	
@@ -491,7 +520,7 @@ public class FreeCellState implements Comparable<FreeCellState> {
 			if(m.isValidColumnToFreeCell(this, i))
 				ret.add(m);
 		}
-		
+		this.numberOfValidMoves = ret.size();
 		return ret;
 	}
 	

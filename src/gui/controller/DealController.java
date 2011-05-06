@@ -3,6 +3,9 @@ package gui.controller;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -74,9 +77,18 @@ public class DealController implements ActionListener {
 		// infinite loop: 1200
 		//int dealNumber = 28352;  
 		
-		// start from initial state (and make copy for later). 
-		FreeCellState fcs = new FreeCellState();
-		try {
+		// start from initial state (and make copy for later).
+	    try {
+	    	
+	    	PrintWriter pwState;
+	    	PrintWriter pwNMoves;
+	    	
+	    	if (Configuration.MAKE_DATA == true) {
+	    		pwState = new PrintWriter(new FileWriter("trainingStateData.dat", true));
+	    		pwNMoves = new PrintWriter(new FileWriter("trainingNMovesData.dat", true));
+	    	}
+			
+			FreeCellState fcs = new FreeCellState();
 			fcs.getInitialState(fileName);
 			// Compute the solution.
 			iDFS sd = new iDFS();	
@@ -87,8 +99,8 @@ public class DealController implements ActionListener {
 
 			if (st == null) {
 		        JOptionPane jop = new JOptionPane();
-		        JOptionPane.showMessageDialog(jop, "Sorry boss, can't find "
-		        		+"solution for this game!"+ "\nPlease choose another game!");
+		        JOptionPane.showMessageDialog(jop, "Xin lỗi, chương trình hiện tại " +
+		        		"chưa tìm được cách giải cho trạng thái trò chơi này!");
 				//System.gc();
 			}
 			//------------------------------------------------------------------
@@ -103,10 +115,29 @@ public class DealController implements ActionListener {
 			pnl.validate();
 			frame.add(pnl);*/
 			//------------------------------------------------------------------
+			FreeCellState startState = fcs.clone();
 			System.out.println(st.size());
 			DefaultListModel dlm = new DefaultListModel();
-			for (int i =0; i < st.size(); i++){
+			int nMoves = st.size();
+			for (int i = 0; i < st.size(); i++){
 				dlm.addElement(st.get(i));
+				
+				if (Configuration.MAKE_DATA == true) {
+					String s = startState.keyToString();
+					pwState.write(s + "\n");
+					pwNMoves.write((nMoves-i) + "\n");
+					Move m = st.get(i);
+					m.setAuto(false);
+					m.execute(startState);
+				}
+				
+			}
+			
+			if (Configuration.MAKE_DATA == true) {
+				pwState.flush();
+				pwState.close();
+				pwNMoves.flush();
+				pwNMoves.close();
 			}
 			
 			Move end = new Move(0);
@@ -138,9 +169,9 @@ public class DealController implements ActionListener {
 			drawer.setNode (fcs);
 			drawer.repaint();
 		} catch (Exception e1) {
+			e1.printStackTrace();
 			return;
 		}
-		
 
 	}
 	

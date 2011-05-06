@@ -10,7 +10,7 @@ import java.util.TreeMap;
 public class iDFS {
 	
 	/** maximum number of visited states that are saved */
-	final int MAX_NUMBER_OF_STATES = 200000;
+	final int MAX_NUMBER_OF_STATES = 2000000;
 	
 	/** depth of DFS, visiting */
 	final int DEPTH = 6;
@@ -31,7 +31,7 @@ public class iDFS {
 	private Trace lastTrace = null;
 	
 	/** 
-	 * contains all moves of each visit.
+	 * Contains all moves of each visit.
 	 * Finally, contains all moves of result.
 	 */
 	private Stack<Move> moveStack; 
@@ -44,6 +44,7 @@ public class iDFS {
 	
 	@SuppressWarnings("unchecked")
 	private boolean visit(final int stateID, int depth) {
+		
 		// current state is an end-state.
 		if (currentState.hasWon()) {
 			return true;	// visit successfully
@@ -60,7 +61,14 @@ public class iDFS {
 			// insert current state into memory
 			prev.put((short[])currentState.key(), count);
 			
-			int score = scorer.eval(currentState);
+			double score;
+			if (Configuration.MAKE_DATA == true) {
+				score = scorer.eval(currentState);
+			}
+			else {
+				score = scorer.evalByNeuralNetworks(currentState);
+			}
+			
 			FreeCellState aCopy = currentState.clone();
 			// set score of state
 			aCopy.score(score);
@@ -82,10 +90,12 @@ public class iDFS {
 			// apply move to current state.
 			move.execute(currentState); 
 			
-			// 
+			// determine whether currentState has already visited by encoding
+			// it with key() function.
 			short[] key = (short[])currentState.key();
 			Integer exist = prev.get(key);
-			if (exist == null) {
+			
+			if (exist == null) {	// if currentState had not ever been visited
 				++count;
 				
 				if (prev.size() > MAX_NUMBER_OF_STATES) {
@@ -95,12 +105,15 @@ public class iDFS {
 
 				prev.put(key, count); 
 				moveStack.push(move);               
-				if (visit(count, depth+1)) {
-					return true;
+				
+				if (visit(count, depth+1)) {	// continue visiting with one-added depth 
+					return true;	// visit successfully
 				}
+				
 				moveStack.pop();
 			}
 			
+			// turn back to the state before moving
 			move.undo(currentState);
 		}
 
@@ -120,6 +133,9 @@ public class iDFS {
 		
 		currentState = startedState;
 		this.scorer = scorer;
+		if (Configuration.MAKE_DATA == false) {
+			this.scorer.loadData();
+		}
 		
 		prev = new TreeMap<short[], Integer>(comparator);
 		
@@ -127,19 +143,22 @@ public class iDFS {
 		
 		pQueue = new PriorityQueue<FreeCellState>();
 		
+		// add the starting state to queue
 		FreeCellState aCopy = currentState.clone();
-		aCopy.score(this.scorer.eval(currentState));
+		if (Configuration.MAKE_DATA == false) {
+			aCopy.score(this.scorer.evalByNeuralNetworks(currentState));
+		} else {
+			aCopy.score(this.scorer.eval(currentState));
+		}
 		pQueue.add(aCopy);
 		
 		int lastBoardID;
+		// begin solving by searching
 		while (pQueue.size() > 0) {
 			
 			// get the first entry in current stack of FreeCell State
 			currentState = pQueue.poll();
 			
-			// last must be set PRIOR to invoking search, since it is used for
-			// linking solutions. moveStack must be instantiated anew also, so
-			// we only create a stack of moves from S.min to new K-distant nodes.
 			lastTrace = (Trace)currentState.storeData();
 			
 			moveStack = new Stack<Move>();
@@ -154,8 +173,8 @@ public class iDFS {
 				lastBoardID = lastTrace.lastBoardID;
 			}
 			
-			if (visit(lastBoardID, 0)) {
-				Logger.write(System.out, "iDFS.solve(): Bravo!");
+			if (visit(lastBoardID, 0)) {	
+				// search successfully
 				// update stored move information.
 				nextTrace = new Trace((Stack<Move>)moveStack.clone(), nextTrace);
 				currentState.store(nextTrace);
@@ -164,7 +183,7 @@ public class iDFS {
 			}
 		}	
 		
-		return null;
+		return null;	// no solution
 	}
 	
 	public static ArrayList<Move> traceBack(FreeCellState finalState) {
