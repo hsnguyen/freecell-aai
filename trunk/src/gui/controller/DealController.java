@@ -82,10 +82,12 @@ public class DealController implements ActionListener {
 	    	
 	    	PrintWriter pwState;
 	    	PrintWriter pwNMoves;
+	    	Scorer scorer;
 	    	
 	    	if (Configuration.MAKE_DATA == true) {
 	    		pwState = new PrintWriter(new FileWriter("trainingStateData.dat", true));
 	    		pwNMoves = new PrintWriter(new FileWriter("trainingNMovesData.dat", true));
+	    		scorer = new Scorer();
 	    	}
 			
 			FreeCellState fcs = new FreeCellState();
@@ -125,7 +127,7 @@ public class DealController implements ActionListener {
 				if (Configuration.MAKE_DATA == true) {
 					String s = startState.keyToString();
 					pwState.write(s + "\n");
-					pwNMoves.write((nMoves-i) + "\n");
+					pwNMoves.write(scorer.eval(startState) + "\n");
 					Move m = st.get(i);
 					m.setAuto(false);
 					m.execute(startState);
